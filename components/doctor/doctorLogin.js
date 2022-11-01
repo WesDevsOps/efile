@@ -3,14 +3,12 @@ import {
   faLock,
   faFingerprint,
 } from "@fortawesome/free-solid-svg-icons";
-
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 
 import { useState } from "react";
 import {
   SafeAreaView,
   Text,
-  Alert,
   View,
   StyleSheet,
   Button,
@@ -18,48 +16,31 @@ import {
   TouchableOpacity,
   Image
 } from "react-native";
-import { auth } from "../config/firebase";
-import {signInWithEmailAndPassword} from 'firebase/auth';
 import logo from '../images/real.png'
 
 const DoctorLogin = ({ navigation }) => {
   const [id, setId] = useState("ID No or Employee No");
   const [pass, setPass] = useState("Password");
-
-  const DocLogin = () => { 
-    signInWithEmailAndPassword(auth,id,pass).then(()=>{
-      if (id !== "" && pass !== ""){
-        navigation.navigate("dcHome");
-        Alert.alert("Successfully Logged In")
-      }else{
-        Alert.alert("Inputs can not be empty")
-        console.log("Inputs can not be empty");
-      }
-
-    }).catch((error)=>{
-      console.log(error);
-    })
-  
-  }
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.circle1}></View>
       <View style={styles.circle2}></View>
-      <View style={styles.circle3}></View>
+      <View style={styles.circle3}>
+        <Text style={styles.logIn}>Doctor Log-In</Text>
+      </View>
       <View>
         <Image source={logo} style={{width:250,height:200,marginTop:"65%"}}/>
       </View>
       <View style={styles.empNo}>
         <FontAwesomeIcon icon={faUser} size={25} style={{ color: "#ECECEC" }} />
         <TextInput
-        
+          onChangeText={setId}
           style={{
             color: "#ECECEC",
             width: "90%",
             paddingLeft: 70,
             height: 40,
           }}
-          onChangeText={(text)=>setId(text)}
           placeholder={id}
           placeholderTextColor="#ECECEC"
         />
@@ -67,7 +48,7 @@ const DoctorLogin = ({ navigation }) => {
       <View style={styles.password}>
         <FontAwesomeIcon icon={faLock} size={25} style={{ color: "#ECECEC" }} />
         <TextInput
-          onChangeText={(text)=>setPass(text)}
+          onChangeText={setPass}
           style={{
             color: "#ECECEC",
             width: "90%",
@@ -81,11 +62,13 @@ const DoctorLogin = ({ navigation }) => {
       <Text style={{ color: "#ECECEC", marginTop: 5 }}onPress={()=>{(navigation.navigate('register'))}}>
         Dont have an account?
       </Text>
-      <Text style={{ color: "#ECECEC", marginTop: 5 }} onPress={()=>{(navigation.navigate('forgotPassword'))}}>Forgot password?</Text>
+      <Text style={{ color: "#ECECEC", marginTop: 5 }} >Forgot password?</Text>
 
       <TouchableOpacity
         style={styles.finger}
-        onPress={DocLogin}
+        onPress={() => {
+          navigation.navigate("dcHome");
+        }}
       >
         <FontAwesomeIcon
           icon={faFingerprint}
@@ -103,81 +86,41 @@ const styles = StyleSheet.create({
     backgroundColor: "#2827D3",
     overflowX: "hidden",
   },
-  container: {
-    flex: 1,
-    alignItems: "center",
-    backgroundColor: "#2827D3",
-    overflowX: "hidden",
-  },
   circle1: {
     position: "absolute",
-    width: 408,
-    height: 408,
-    right: -80,
+    width: 470,
+    height: 470,
+    left: -50,
     top: -90,
-    opacity: 0.25,
+    opacity: "25%",
     backgroundColor: "#5060F0",
-    borderRadius: 300,
+    borderRadius: "50%",
   },
   circle2: {
     position: "absolute",
-    width: 310,
-    height: 310,
-    right: -30,
-    top: -50,
-    opacity: 0.35,
+    width:360,
+    height: 360,
+    left: 5,
+    top: -45,
+    opacity: "35%",
     backgroundColor: "#5060F0",
-    borderRadius: 300,
+    borderRadius: "50%",
   },
   circle3: {
     position: "absolute",
-    width: 200,
-    height: 200,
-    right: 25,
-    top: 4,
+    width: 240,
+    height: 240,
+    left:65,
+    top: 10,
     backgroundColor: "#5060F0",
-    borderRadius: 300,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  circle4: {
-    position: "absolute",
-    width: 308,
-    height: 308,
-    left: -143,
-    bottom: 90,
-    opacity: 0.25,
-    backgroundColor: "#5060F0",
-    borderRadius: 300,
-  },
-  circle5: {
-    position: "absolute",
-    width: 200,
-    height: 200,
-    left: -90,
-    bottom: 145,
-    backgroundColor: "#5060F0",
-    borderRadius: 300,
-    opacity: 0.35,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  circle6: {
-    position: "absolute",
-    width: 110,
-    height: 110,
-    left: -53,
-    bottom: 188,
-    backgroundColor: "#5060F0",
-    borderRadius: 300,
-    opacity:0.35,
+    borderRadius: "50%",
     alignItems: "center",
     justifyContent: "center",
   },
   logIn: {
     color: "white",
-    // fontSize: 24,
-    // fontWeight: 700,
+    fontSize: 24,
+    fontWeight: 700,
   },
   empNo: {
     marginTop: 50,

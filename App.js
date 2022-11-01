@@ -4,16 +4,18 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // import RcHome from "./components/receptionist/rcHome";
 import LoginAs from "./components/loginAs";
-import Register from "./components/receptionist/register";
+// import Register from "./components/receptionist/register";
 // import RcPatientFile from "./components/receptionist/rcPatientFile";
 import NurseHome from "./components/nurse/nurseHome";
 // import RcLogin from "./components/receptionist/rcLogin";
 import NursePatientFile from "./components/nurse/nursePatientFile";
-import NurseLogin from "./components/nurse/nurseLogIn";
-import DoctorLogin from "./components/doctor/doctorLogin";
-import ForgotPassword from "./components/forgotPassword";
+import Login from "./components/login";
+import NurseLogin from "./components/nurse/nurseLogin";
+import Register from "./components/register";
+import DcLogin from "./components/doctor/dcLogin";
 import DcHome from "./components/doctor/dcHome";
-import docPaitentFilee from "./components/doctor/docPaitentFile";
+import docPaitentFilee from "./components/doctor/docPatientFile";
+
 const App = () => {
   const Stack = createNativeStackNavigator();
   return (
@@ -23,19 +25,15 @@ const App = () => {
           headerShown: false,
         }}
       >
-        <Stack.Screen name="loginAs" component={LoginAs} />
-        {/* <Stack.Screen name="rcLogin" component={RcLogin} /> */}
+        <Stack.Screen name="loginAs" component={LoginAs} />  
         <Stack.Screen name="register" component={Register} />
-        {/* <Stack.Screen name="rcHome" component={RcHome} /> */}
-        {/* <Stack.Screen name="rcPatientFile" component={RcPatientFile} /> */}
         <Stack.Screen name="nursePatientFile" component={NursePatientFile} />
         <Stack.Screen name="nurseHome" component={NurseHome} />
-        <Stack.Screen name="nurseLogIn" component={NurseLogin} />
-        <Stack.Screen name="doctorLogin" component={DoctorLogin} />
-        <Stack.Screen name="forgotPassword" component={ForgotPassword} />
+        <Stack.Screen name="nurseLogin" component={NurseLogin}/>
+        <Stack.Screen name="dcLogin" component={DcLogin} />
         <Stack.Screen name="dcHome" component={DcHome} />
-        <Stack.Screen name="docpPaitenFile" component={docPaitentFilee} />
-        
+        <Stack.Screen name="docPatientFile" component={docPaitentFilee} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

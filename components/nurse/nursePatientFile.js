@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { SafeAreaView, StyleSheet, View, Text, ScrollView, Pressable } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, ScrollView, Pressable, Alert } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native";
 import { Button } from "react-native";
 import React from "react";
@@ -9,73 +9,51 @@ import Checkbox from "expo-checkbox";
 import { Picker } from "@react-native-picker/picker";
 
 
-const NursePatientFile = ({ route }) => {
+const NursePatientFile = ({ navigation,route }) => {
     const [agree, setAgree] = useState(false);
+    const [condition, setCondition]=React.useState("");
+    const [nurseNotes,setNurseNotes]=React.useState("");
     const { patient } = route.params;
     let today = new Date();
 
     const [data, setData] = React.useState([])
-    const patientRef = collection(db, "patients")
+    const patientRef = collection(db, "records")
 
-    const date ={
-        createdAt: serverTimestamp()
-    }
-
-    addDoc(patientRef,date).then(()=>{
-        console.log('date available');
-    }).catch((error)=>{
-        console.log(error);
-    })
 
     const getPatientRef = async () => {
         const data = await getDocs(patientRef)
 
         console.log(data.docs.map((results) => (results.data())))
         setData(data.docs.map((results) => ({ ...results.data(), id: results.id })));
-
-
     }
     useEffect(() => {
         getPatientRef()
 
     }, []);
-    const records = [
-        {
-            date: today,
-            patient: patient.fullName,
-            syptoms: "fever* or feeling feverish/chills, sore throat, cough, runny or stuffy nose, muscle or body aches, fatigue (tiredness), body aches, chills, cough, fatigue, fever",
-            condition: patient.condition,
-            date: "Mon Oct 24 2022"
-        },
-        {
-            date: today,
-            patient: patient.fullName,
-            syptoms: "fever* or feeling feverish/chills, sore throat, cough, runny or stuffy nose, muscle or body aches, fatigue (tiredness), body aches, chills, cough, fatigue, fever",
-            condition: patient.condition,
-            date: "Tue Oct 25 2022"
-        },
-        {
-            date: today,
-            patient: patient.fullName,
-            syptoms: "fever* or feeling feverish/chills, sore throat, cough, runny or stuffy nose, muscle or body aches, fatigue (tiredness), body aches, chills, cough, fatigue, fever",
-            condition: patient.condition,
-            date: "Mon Oct 24 2022"
-        },
-        {
-            date: today,
-            patient: patient.fullName,
-            syptoms: "fever* or feeling feverish/chills, sore throat, cough, runny or stuffy nose, muscle or body aches, fatigue (tiredness), body aches, chills, cough, fatigue, fever",
-            condition: patient.condition,
-            date: "Tue Oct 25 2022"
-        },
-        {
-            date: today,
-            patient: patient.fullName,
-            syptoms: "fever* or feeling feverish/chills, sore throat, cough, runny or stuffy nose, muscle or body aches, fatigue (tiredness), body aches, chills, cough, fatigue, fever",
-            condition: patient.condition,
-            date: "Wed Oct 26 2022"
+    
+    const AddRecord = () =>{
+
+        const Patient ={
+            idno:patient.idno,
+            fullName:patient.fullName,
+            phoneNumber:patient.phoneNumber,
+            physicalAddress:patient.physicalAddress,
+            nextOfKin:patient.nextOfKin,
+            notes:"Receptionist: "+patient.notes+", Nurse: "+nurseNotes,
+            condition:condition,
+            date:today.toString().substring(0,15)
+        };
+    
+        addDoc(patientRef,Patient).then(()=>{
+            console.log('patient added');
+            Alert.alert("successfully added");
+        }).catch((err)=> {
+            console.log(err);
+            Alert.alert('Something went wrong')
+          })
         }
-    ]
+
+
     const [nurseAdd, setNurseAdd] = React.useState(false)
     console.log(agree)
     return (
@@ -102,31 +80,37 @@ const NursePatientFile = ({ route }) => {
                     <View style={{ width: 339, height: 1, backgroundColor: "#FFFFFF" }} ></View>
 
                     <ScrollView>
-                        {data.map((record, i) => (
-                            record.date === today.toString().substring(0, 15) ? (
+                        {data.map((record, i) => {
+                             if(record.fullName==patient.fullName){
+                                return(
+                                    record.date === today.toString().substring(0, 15) ? (
 
-                                <View key={i} style={{ width: 300, alignSelf: "center", backgroundColor: "#5060F0", marginTop: 10, padding: 5, borderRadius: 8 }}>
-                                    <Text style={{ color: "white" }}>Date: {record.date}</Text>
-                                    <Text style={{ color: "white" }}>Patient: {record.patient}</Text>
-                                    <Text style={{ color: "white" }}>Notes: {record.syptoms}</Text>
-                                    {nurseAdd === false ? (
-                                        <TouchableOpacity style={styles.btn} onPress={() => setNurseAdd(true)}>Add notes</TouchableOpacity>
-                                    ) : (
-                                        <View>
-                                            <TextInput placeholder="Notes by nurse" style={{ width: "98%", height: 42, backgroundColor: "#2827D3", borderRadius: 5, placeholderTextColor: "white", paddingLeft: 10, color: "white", margin: 10, alignSelf: "center" }}>
-                                            </TextInput>
-                                            <TouchableOpacity style={styles.btn}>
-                                                Save
-                                            </TouchableOpacity>
+                                        <View key={i} style={{ width: 300, alignSelf: "center", backgroundColor: "#5060F0", marginTop: 10, padding: 5, borderRadius: 8 }}>
+                                            <Text style={{ color: "white" }}>Date: {record.date}</Text>
+                                            <Text style={{ color: "white" }}>Patient: {record.fullName}</Text>
+                                            <Text style={{ color: "white" }}>Notes: {record.notes}</Text>
+                                            {nurseAdd === false ? (
+                                                <TouchableOpacity style={styles.btn} onPress={() => setNurseAdd(true)}>
+                                                    <Text>Add notes</Text></TouchableOpacity>
+                                            ) : (
+                                                <View>
+                                                  <TextInput placeholder="Notes by nurse"  
+                                                    onChangeText={(text)=>setNurseNotes(text)}
+                                                    style={{ width: "98%", height: 42, backgroundColor: "#2827D3", borderRadius: 5, paddingLeft: 10, color: "white", margin: 10, alignSelf: "center" }}>
+                                                    </TextInput>
+                                                    <TouchableOpacity style={styles.btn}>
+                                                        <Text>Save</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                            )}
+        
                                         </View>
-                                    )}
-
-                                </View>
-                            ) : (
-                                <Text style={{ color: "white" }}></Text>
-                            )
-                        ))
-
+                                    ) : (
+                                        <Text style={{ color: "white" }}></Text>
+                                    )
+                                )
+                             }                            
+                            })
                         }
                     </ScrollView>
                 </View>
@@ -136,6 +120,7 @@ const NursePatientFile = ({ route }) => {
                         value={agree}
                         onValueChange={() => setAgree(!agree)}
                         color={agree ? "#4630EB" : "black"}
+                        style={{marginLeft:15, marginBottom:15}}
                     />
                     <Text style={{ color: "white", marginLeft: 10 }}>Seen by nurse</Text>
                 </View>
@@ -144,32 +129,33 @@ const NursePatientFile = ({ route }) => {
                     title="Share"
                     style={{ width: 300 }}
                     disabled={!agree}
-                    onPress={() => {
-                        /* Do something */
-                    }}
+                    onPress={() =>AddRecord()}
                 />
+
 
                 <View style={{ alignSelf: "stretch", marginTop: 20, backgroundColor: "#5060F0", borderRadius: 15, height: 300, marginBottom: 30 }}>
                     <Text style={{ color: "white", marginLeft: 10 }}>Patient Medical history</Text>
                     <View style={{ width: 339, height: 1, backgroundColor: "#FFFFFF" }} ></View>
                     <ScrollView style={{ marginTop: 10 }}>
                         {data.map((record, index) => {
+                           if(record.fullName==patient.fullName)
+                           {
                             return (
-
                                 <View key={index} style={{ width: 300, alignSelf: "center", backgroundColor: "#2827D3", marginTop: 10, padding: 5, borderRadius: 8 }}>
                                     <Text style={{ color: "white" }}>Date: {record.date}</Text>
-                                    <Text style={{ color: "white" }}>Patient: {record.fullNames}</Text>
-                                    <Text style={{ color: "white" }}>Notes: {record.syptoms}</Text>
-
+                                    <Text style={{ color: "white" }}>Patient: {record.fullName}</Text>
+                                    <Text style={{ color: "white" }}>Notes: {record.notes}</Text>
                                 </View>
                             )
+                           }
+                          
                         })}
                     </ScrollView>
 
                 </View>
             </View>
 
-            <TouchableOpacity style={{ width: 246, height: 41, backgroundColor: "#5060F0", borderRadius: 5, justifyContent: "center", marginBottom: 20 }} onPress={() => navigation.navigate("nurseLogin")}>
+            <TouchableOpacity style={{ width: 246, height: 41, backgroundColor: "#5060F0", borderRadius: 5, justifyContent: "center", marginBottom: 20 }} onPress={() => navigation.navigate("nurseHome")}>
                 <Text style={{ alignSelf: "center", color: "white" }}>Close</Text>
             </TouchableOpacity>
         </SafeAreaView>
@@ -184,7 +170,7 @@ const styles = StyleSheet.create({
     },
     record: {
         width: "95%",
-        height: 44,
+        height: 30,
         backgroundColor: "#5060F0",
         borderRadius: 5,
         alignSelf: "center",
@@ -206,10 +192,10 @@ const styles = StyleSheet.create({
     },
     todayRecords: {
 
-        marginBottom: 20,
+        marginBottom: 10,
         padding: 20,
         alignSelf: "stretch",
-        height: 300,
+        height: 180,
         marginTop: 20,
         // backgroundColor:"#5060F0",
         borderRadius: 15,

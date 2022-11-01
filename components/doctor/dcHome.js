@@ -1,150 +1,34 @@
 // import { faColumns } from "@fortawesome/free-solid-svg-icons";
 import { SafeAreaView,StyleSheet, View, Text, ScrollView,Image,TouchableOpacity } from "react-native";
- import doc from '../images/doctor.png';
+import doc from '../images/doctor.png';
+
+import { addDoc, collection, getDocs,serverTimestamp } from 'firebase/firestore';
+import { auth, db } from '../config/firebase.js';
+import React, { useEffect } from "react";
 
 
 
 const DcHome = ({ navigation }) => {
 
+const [filteredDataSource,setFilteredDataSource]=React.useState([]);
+const [patientInfo,setPatientInfo]=React.useState([])
+const [doctor,setDoctor]=React.useState('')
+    const patientRef = collection(db, "patients")
 
-
-
-     
-const fileNurse = [
-    {
-        idex: "1",
-        idno:"982900980219",
-            fullName:"Thabo Mphela",
-            address:"321 zone 1,"+
-             "seshego"
-             +"0751"
-             ,
-            Notes:"",
-            condition:"Severe",
-    },{
-        idex: "2",
-        idno:"982900980219",
-            fullName:"Thabo Mphela",
-            address:"321 zone 1,"+
-             "seshego"
-             +"0751"
-             ,
-            Notes:"",
-            condition:"Severe",
-    },{
-        idex: "3",
-        idno:"982900980219",
-            fullName:"Thabo Mphela",
-            address:"321 zone 1,"+
-             "seshego"
-             +"0751"
-             ,
-            Notes:"",
-            condition:"Severe",
-    },{
-        idex: "4",
-        idno:"982900980219",
-            fullName:"Thabo Mphela",
-            address:"321 zone 1,"+
-             "seshego"
-             +"0751"
-             ,
-            Notes:"",
-            condition:"Severe",
-    },{
-        idex: "5",
-        idno:"982900980219",
-            fullName:"Thabo Mphela",
-            address:"321 zone 1,"+
-             "seshego"
-             +"0751"
-             ,
-            Notes:"",
-            condition:"Severe",
-    },{
-        idex: "6",
-        idno:"982900980219",
-            fullName:"Thabo Mphela",
-            address:"321 zone 1,"+
-             "seshego"
-             +"0751"
-             ,
-            Notes:"",
-            condition:"Severe",
-    },{
-        idex: "7",
-        idno:"982900980219",
-            fullName:"Thabo Mphela",
-            address:"321 zone 1,"+
-             "seshego"
-             +"0751"
-             ,
-            Notes:"",
-            condition:"Severe",
-    },{
-        idex: "8",
-        idno:"982900980219",
-            fullName:"Thabo Mphela",
-            address:"321 zone 1,"+
-             "seshego"
-             +"0751"
-             ,
-            Notes:"",
-            condition:"Severe",
-    },{
-        idex: "9",
-        idno:"982900980219",
-            fullName:"Thabo Mphela",
-            address:"321 zone 1,"+
-             "seshego"
-             +"0751"
-             ,
-            Notes:"",
-            condition:"Severe",
-    },{
-        idex: "10",
-        idno:"982900980219",
-            fullName:"Thabo Mphela",
-            address:"321 zone 1,"+
-             "seshego"
-             +"0751"
-             ,
-            Notes:"",
-            condition:"Severe",
-    },{
-        idex: "11",
-        idno:"982900980219",
-            fullName:"Thabo Mphela",
-            address:"321 zone 1,"+
-             "seshego"
-             +"0751"
-             ,
-            Notes:"",
-            condition:"Severe",
-    },{
-        idex: "12",
-        idno:"982900980219",
-            fullName:"Thabo Mphela",
-            address:"321 zone 1,"+
-             "seshego"
-             +"0751"
-             ,
-            Notes:"",
-            condition:"Severe",
-    },
-];
-
-    const doctor = [
-        {
-            Id: "00000-0000-000",
-            name: "Dr Warren",
-            pacno: "00000-0000-000-000"
-        }
-
-    ]
-    const DocPaitentFile = () => { 
-        navigation.navigate("docpPaitenFile");
+    const getPatientRef = async () => {
+        const data = await getDocs(patientRef)
+        const doctors=await getDocs(collection(db,"users"))
+        console.log(data.docs.map((results) => (results.data())))
+        setPatientInfo(data.docs.map((results) => ({ ...results.data(), id: results.id })));
+        setDoctor(data.docs.map((results) => { if(results.email===auth.currentUser.email){return(results.data()) }}));
+        console.log(auth.currentUser)
     }
+    useEffect(() => {
+        getPatientRef()
+
+    }, []);
+
+
     return ( 
         <SafeAreaView  style={styles.container}>
 
@@ -156,9 +40,9 @@ const fileNurse = [
                 </View>
                 <View style={styles.circle13}>
                     {/* doc info here */}
-                    <Text style={{ color: "#ECECEC"}}>ID:{doctor.map((res)=>{return(res.Id)})}</Text>
-                    <Text style={{ color: "#ECECEC"}}>Name:{doctor.map((res)=>{return(res.name)})}</Text>
-                    <Text style={{ color: "#ECECEC"}}>Practice No:{doctor.map((res)=>{return(res.pacno)})}</Text>
+                    <Text style={{ color: "#ECECEC"}}>ID: {auth.currentUser.email}</Text>
+                    <Text style={{ color: "#ECECEC"}}>Name: {auth.currentUser.email.toString().substring(2,9)}</Text>
+                    <Text style={{ color: "#ECECEC"}}>Practice No: 0000-0000-0000-0000</Text>
                 </View>
             
             </View>
@@ -176,24 +60,26 @@ const fileNurse = [
                  </View>
                  <ScrollView style={styles.circle24} showVerticalScrollIndicator={false}>
                  
-                 {fileNurse.map((paitent,index)=>{
-                    return(
-                        <>
-                     <TouchableOpacity onPress={DocPaitentFile}>
-                        <View style={styles.circle23} key={index} >
-                      
-                        
-                            <View style={styles.circle234}><Text style={{ color: "#ECECEC"}}>{paitent.idex} </Text></View>
-                            <View style={styles.circle235}><Text style={{ color: "#ECECEC"}}>{paitent.fullName}</Text></View>
-                            <View style={styles.circle236}><Text style={{ color: "#ECECEC"}}>{paitent.condition}</Text></View>
-                        
-
-                 
-                    </View>
-                     </TouchableOpacity>
-                      
-                    </>
-                    )
+                 {patientInfo.map((paitent,index)=>{
+                    if(paitent.fullName!=''){
+                        return(
+                            <>
+                         <TouchableOpacity onPress={()=>navigation.navigate("docPatientFile",{patient:paitent, index:index})}>
+                            <View style={styles.circle23} key={index} >
+                          
+                            
+                                <View style={styles.circle234}><Text style={{ color: "#ECECEC"}}>{index+1} </Text></View>
+                                <View style={styles.circle235}><Text style={{ color: "#ECECEC"}}>{paitent.fullName}</Text></View>
+                                <View style={styles.circle236}><Text style={{ color: "#ECECEC"}}>{paitent.condition}</Text></View>
+                            
+    
+                     
+                        </View>
+                         </TouchableOpacity>
+                          
+                        </>
+                        )
+                    }
                     
                      
                     })}
