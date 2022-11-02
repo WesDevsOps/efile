@@ -117,14 +117,14 @@ const docPaitentFilee = ({navigation,route}) =>{
                                     <Text style={{color:'white', fontSize: 20, marginBottom:4, marginLeft:4,}}>{index}00-000-001AQ</Text>
                                 </View>
                                 <View style={styles.containerin3in2}>
-                                <Text style={{color:'white',marginLeft:4, height: 40,}}>Patient: {res.fullName}</Text>
-                                    <Text style={{color:'white',marginLeft:4, height: 40,}}>Symptoms: {res.notes}</Text>
+                                {/* <Text style={{color:'white',marginLeft:4, height: 40,}}>Patient: {res.fullName}</Text> */}
+                                    <Text style={{color:'white',marginLeft:4, height: "60%",}}>{res.notes}</Text>
                                     {(res.diagnosis=="" || res.diagnosis==null)
                                     ?
                                     (<Text></Text>)
                                     :
                                     (
-                                    <Text style={{color:'white',marginLeft:4, height: 40,}}>Doctor's diagnosis: {res.diagnosis}</Text>
+                                    <Text style={{color:'white',marginLeft:4, height: 40,}}>{res.diagnosis}</Text>
                                     )
                                     }
                                     
